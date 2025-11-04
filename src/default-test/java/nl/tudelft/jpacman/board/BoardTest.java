@@ -53,4 +53,32 @@ class BoardTest {
     void testSquareAt(int x, int y) {
         assertThat(board.squareAt(x, y)).isEqualTo(grid[x][y]);
     }
+
+    /**
+     * Tests that a valid board (1x1 BasicSquare) passes invariant check.
+     */
+    @Test
+    void testValidBoardInvariant() {
+        Square[][] validGrid = new Square[][] {
+            { new BasicSquare() }
+        };
+        Board validBoard = new Board(validGrid);
+
+        // squareAt should return a non-null square
+        assertThat(validBoard.squareAt(0, 0)).isNotNull();
+    }
+
+    /**
+     * Tests that a board with a null square triggers an assertion error.
+     */
+    @Test
+    void testInvalidBoardInvariant() {
+        Square[][] invalidGrid = new Square[][] {
+            { null }
+        };
+
+        // Expect AssertionError because of board invariant violation
+        org.junit.jupiter.api.Assertions.assertThrows(AssertionError.class, () -> new Board(invalidGrid));
+    }
+
 }
