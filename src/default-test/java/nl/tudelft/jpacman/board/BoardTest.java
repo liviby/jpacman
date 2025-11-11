@@ -78,7 +78,10 @@ class BoardTest {
         };
 
         // Expect AssertionError because of board invariant violation
-        org.junit.jupiter.api.Assertions.assertThrows(AssertionError.class, () -> new Board(invalidGrid));
+        org.junit.jupiter.api.Assertions.assertThrows(
+            AssertionError.class,
+            () -> new Board(invalidGrid)
+        );
     }
 
 }
