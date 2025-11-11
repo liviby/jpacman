@@ -2,13 +2,17 @@ package nl.tudelft.jpacman.board;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for the Board class.
  */
 public class BoardTest {
 
+    /**
+     * Tests that a valid board (with a non-null square) is created successfully.
+     */
     @Test
     void testValidBoard() {
         Square[][] grid = new Square[][] {
@@ -18,12 +22,16 @@ public class BoardTest {
         assertNotNull(board.squareAt(0, 0), "Square at (0,0) should not be null");
     }
 
+    /**
+     * Tests that a board with a null square throws an AssertionError.
+     */
     @Test
     void testInvalidBoard() {
         Square[][] grid = new Square[][] {
             { null }
         };
         // The Board constructor uses assertions to check invariants.
-        assertThrows(AssertionError.class, () -> new Board(grid), "Board with null square should fail invariant check");
+        assertThrows(AssertionError.class, () -> new Board(grid),
+            "Board with null square should fail invariant check");
     }
 }

@@ -19,6 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 @ExtendWith(MockitoExtension.class)
 public class MapParserTest {
+
+    private static final int EXPECTED_WALL_COUNT = 26;
+    private static final int EXPECTED_GROUND_COUNT = 10;
+
     @Mock
     private BoardFactory boardFactory;
     @Mock
@@ -31,7 +35,6 @@ public class MapParserTest {
      */
     @Test
     public void testParseMapGood() {
-        // NOTE: MockitoAnnotations.initMocks(this) is redundant when using @ExtendWith(MockitoExtension.class)
         assertNotNull(boardFactory);
         assertNotNull(levelFactory);
 
@@ -44,16 +47,16 @@ public class MapParserTest {
         map.add("#P        G#");
         map.add("############");
 
-
         mapParser.parseMap(map);
+
         Mockito.verify(levelFactory, Mockito.times(1)).createGhost();
-        Mockito.verify(boardFactory, Mockito.times(26)).createWall();
-        Mockito.verify(boardFactory, Mockito.times(10)).createGround();
+        Mockito.verify(boardFactory, Mockito.times(EXPECTED_WALL_COUNT)).createWall();
+        Mockito.verify(boardFactory, Mockito.times(EXPECTED_GROUND_COUNT)).createGround();
         Mockito.verify(boardFactory, Mockito.times(1)).createBoard(Mockito.any());
         Mockito.verify(levelFactory, Mockito.times(1)).createLevel(
-            Mockito.any(), // Board
-            Mockito.any(), // List<Ghost>
-            Mockito.any()  // List<Square> startPositions
+            Mockito.any(),
+            Mockito.any(),
+            Mockito.any()
         );
     }
 
@@ -65,22 +68,20 @@ public class MapParserTest {
     public void testParseMapWrong1() {
         PacmanConfigurationException thrown =
             Assertions.assertThrows(PacmanConfigurationException.class, () -> {
-                // MockitoAnnotations.initMocks(this) removed
                 assertNotNull(boardFactory);
                 assertNotNull(levelFactory);
 
                 MapParser mapParser = new MapParser(levelFactory, boardFactory);
                 ArrayList<String> map = new ArrayList<>();
 
-                // Map with unequal width (11, 8, 11). This error is caught first in checkMapFormat().
-                map.add("###########"); // 11 chars
-                map.add("#P  @ G#"); // 8 chars
-                map.add("###########"); // 11 chars
+                // Map with unequal width (11, 8, 11)
+                map.add("###########");
+                map.add("#P  @ G#");
+                map.add("###########");
 
                 mapParser.parseMap(map);
             });
 
-        // The MapParser is checked for unequal width first, which throws this specific message.
         Assertions.assertEquals("Input text lines are not of equal width.", thrown.getMessage());
     }
 }
